@@ -1,4 +1,4 @@
-const DEFAULT_SCRIPT_URL = 'https://cdn.bradsearch.com/autocomplete/latest/bradsearch-autocomplete.min.js';
+const DEFAULT_SCRIPT_URL = 'https://cdn.js.bradsearch.com/bradsearch-scripts/v6.0.6/bradautocomplete.umd.js';
 
 export function buildApiConfig({ publicKey, apiUrl }) {
     return {
