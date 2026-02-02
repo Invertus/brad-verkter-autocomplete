@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-React component package (`@invertus/brad-verkter-autocomplete`) that wraps the BradSearch autocomplete web component for Verkter storefronts. Framework-agnostic, designed for Magento PWA Studio integration.
+React component package (`@bradsearch/brad-verkter-autocomplete`) that wraps the BradSearch autocomplete web component for Verkter storefronts. Framework-agnostic, designed for Magento PWA Studio integration.
 
 ## Architecture
 
@@ -30,6 +30,17 @@ No build step - source files are published directly. Requires React >=16.8.0 as 
 ```bash
 npm install  # Install peer dependencies for local testing
 ```
+
+## JavaScript Compatibility
+
+**Important:** This package must use ES5/ES6 syntax compatible with PWA Studio 12's Webpack 4 + Babel configuration.
+
+**Avoid these modern syntax features:**
+- Optional chaining (`?.`) - use `obj && obj.prop` instead
+- Nullish coalescing (`??`) - use `|| ''` or explicit checks
+- Object spread in some contexts may need fallbacks
+
+The package is consumed directly without transpilation by verkter-pwa, so all source code must be parseable by older bundlers.
 
 ## Adding New Locales
 
