@@ -98,17 +98,21 @@ const BradSearchAutocomplete = ({
 
             const encodedQuery = encodeURIComponent(query);
 
+            var origin = (globalThis.location && globalThis.location.origin) || '';
+
             if (section === 'facet') {
                 const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                window.location.href = `${globalThis.location?.origin || ''}/search.html?query=${encodedQuery}&manufacturer%5Bfilter%5D=${encodedValue}`;
+                window.location.href = origin + '/search.html?query=' + encodedQuery + '&manufacturer%5Bfilter%5D=' + encodedValue;
             } else if (section === 'category') {
-                const foundCode = categoryFilterCodes.find(code =>
-                    filters[code]?.some(filterItem => filterItem.value === item.value)
-                );
+                const foundCode = categoryFilterCodes.find(function(code) {
+                    return filters[code] && filters[code].some(function(filterItem) {
+                        return filterItem.value === item.value;
+                    });
+                });
 
                 if (foundCode) {
                     const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                    window.location.href = `${globalThis.location?.origin || ''}/search.html?query=${encodedQuery}&${foundCode}%5Bfilter%5D=${encodedValue}`;
+                    window.location.href = origin + '/search.html?query=' + encodedQuery + '&' + foundCode + '%5Bfilter%5D=' + encodedValue;
                 }
             }
         };

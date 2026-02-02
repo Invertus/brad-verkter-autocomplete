@@ -5,13 +5,13 @@ BradSearch autocomplete component for Verkter storefronts. Framework-agnostic Re
 ## Installation
 
 ```bash
-npm install @invertus/brad-verkter-autocomplete
+npm install @bradsearch/brad-verkter-autocomplete
 ```
 
 ## Quick Start
 
 ```jsx
-import { BradSearchAutocomplete } from '@invertus/brad-verkter-autocomplete';
+import { BradSearchAutocomplete } from '@bradsearch/brad-verkter-autocomplete';
 
 function SearchBar() {
   return (
@@ -43,7 +43,7 @@ function SearchBar() {
 ## Magento PWA Studio Integration
 
 ```jsx
-import { BradSearchAutocomplete } from '@invertus/brad-verkter-autocomplete';
+import { BradSearchAutocomplete } from '@bradsearch/brad-verkter-autocomplete';
 import { useQuery } from '@apollo/client';
 import { gql } from 'graphql-tag';
 
