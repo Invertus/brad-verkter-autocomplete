@@ -1,6 +1,6 @@
 {
   "name": "@bradsearch/brad-verkter-autocomplete",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "BradSearch autocomplete component for Verkter client storefront",
   "main": "dist/index.js",
   "module": "dist/index.js",
