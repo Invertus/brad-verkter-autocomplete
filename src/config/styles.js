@@ -1,0 +1,57 @@
+const styles = {
+    error: {
+        danger: '#cc0000',
+    },
+    button: {
+        color: '#ffffff',
+        padding: '8px',
+        primary: '#405458',
+        fontSize: '16px',
+        fontWeight: '400',
+        borderRadius: '0px',
+        hoverTextColor: '',
+        hoverBackgroundColor: '',
+    },
+    global: {
+        fontSize: '16px',
+        textColor: '#212121',
+        fontFamily: 'SF-PRO, SF PRO, sans-serif',
+        fontWeight: '400',
+        lineHeight: '10px',
+        borderRadius: '12px',
+        backgroundColor: '#ffffff',
+    },
+    filters: {
+        fontFamily: 'SF-PRO, SF PRO, sans-serif',
+        fontWeight: '400',
+        fontSize: '16px',
+        backgroundColor: '#ffffff',
+    },
+    highlights: {
+        fontSize: '16px',
+        textColor: '#405458',
+        fontWeight: 'semibold',
+        backgroundColor: '#fcc90f',
+    },
+    productCard: {
+        skuSize: '14px',
+        nameSize: '16px',
+        skuColor: '#9B999A',
+        brandSize: '16px',
+        nameColor: '#405458',
+        priceSize: '16px',
+        skuWeight: '400',
+        hoverColor: '#fedf62',
+        nameWeight: '400',
+        priceColor: '#405458',
+        priceWeight: '400',
+        hoverTextColor: '',
+        priceTextColor: '#405458',
+        priceDisplaySize: '14px',
+        priceDisplayColor: '#405458',
+        priceDisplayWeight: '400',
+        hoverBackgroundColor: '#f0ebeb',
+    },
+};
+
+export default styles;

@@ -1,0 +1,34 @@
+{
+  "name": "@bradsearch/brad-verkter-autocomplete",
+  "version": "1.0.0",
+  "description": "BradSearch autocomplete component for Verkter client storefront",
+  "main": "src/index.js",
+  "module": "src/index.js",
+  "files": [
+    "src"
+  ],
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "keywords": [
+    "bradsearch",
+    "autocomplete",
+    "react",
+    "magento",
+    "pwa"
+  ],
+  "license": "Apache-2.0",
+  "private": false,
+  "author": {
+    "name": "BradSearch",
+    "email": "hello@bradsearch.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Invertus/brad-verkter-autocomplete"
+  },
+  "bugs": {
+    "url": "https://github.com/Invertus/brad-verkter-autocomplete/issues"
+  },
+  "homepage": "https://github.com/Invertus/brad-verkter-autocomplete#readme"
+}
