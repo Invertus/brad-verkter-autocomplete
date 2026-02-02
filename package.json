@@ -1,14 +1,24 @@
 {
   "name": "@bradsearch/brad-verkter-autocomplete",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "BradSearch autocomplete component for Verkter client storefront",
-  "main": "src/index.js",
-  "module": "src/index.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "files": [
-    "src"
+    "dist"
   ],
+  "scripts": {
+    "build": "babel src --out-dir dist --copy-files",
+    "prepublishOnly": "npm run build"
+  },
   "peerDependencies": {
     "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@babel/preset-react": "^7.23.0"
   },
   "keywords": [
     "bradsearch",

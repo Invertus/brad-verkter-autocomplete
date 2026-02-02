@@ -25,22 +25,18 @@ The component dynamically loads the BradSearch web component script and injects 
 
 ## Development
 
-No build step - source files are published directly. Requires React >=16.8.0 as peer dependency.
-
 ```bash
-npm install  # Install peer dependencies for local testing
+npm install   # Install dependencies
+npm run build # Build dist/ from src/
 ```
 
-## JavaScript Compatibility
+The package uses Babel to transpile JSX and modern syntax before publishing. The `prepublishOnly` script runs `npm run build` automatically.
 
-**Important:** This package must use ES5/ES6 syntax compatible with PWA Studio 12's Webpack 4 + Babel configuration.
+## Build Output
 
-**Avoid these modern syntax features:**
-- Optional chaining (`?.`) - use `obj && obj.prop` instead
-- Nullish coalescing (`??`) - use `|| ''` or explicit checks
-- Object spread in some contexts may need fallbacks
-
-The package is consumed directly without transpilation by verkter-pwa, so all source code must be parseable by older bundlers.
+- Source files live in `src/`
+- Babel compiles to `dist/` (excluded from git, included in npm package)
+- Published package only contains `dist/` folder
 
 ## Adding New Locales
 
