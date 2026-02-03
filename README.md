@@ -42,6 +42,153 @@ function SearchBar() {
 ## Magento PWA Studio Integration
 
 ```jsx
+// 1. In venia-ui/lib/components/SearchBar create new file, e.g bradSearchAutocomplete.js
+
+import React from 'react';
+import { shape, string } from 'prop-types';
+import { useAppContext } from '@magento/peregrine/lib/context/app';
+import { BradSearchAutocomplete as BradSearchAutocompleteBase } from '@bradsearch/brad-verkter-autocomplete';
+
+// hardcoded codes used for backwards category filter compatability
+const CATEGORY_FILTER_CODES = ['f71a39ed758a2aba322bd3a9212e01', 'b6f2c76b997fff72c8a41e1531e5ab'];
+
+const BradSearchAutocomplete = ({ storeConfig }) => {
+    const [{ pricesWithTax }] = useAppContext();
+
+    const {
+        bradsearch_autocomplete_public_key: publicKey,
+        store_code: storeCode
+    } = storeConfig || {};
+
+    if (!publicKey) return null;
+
+    return (
+        <BradSearchAutocompleteBase
+            publicKey={publicKey}
+            showTaxes={pricesWithTax}
+            storeCode={storeCode}
+            categoryFilterCodes={CATEGORY_FILTER_CODES}
+        />
+    );
+};
+
+BradSearchAutocomplete.propTypes = {
+    storeConfig: shape({
+        bradsearch_autocomplete_public_key: string,
+        store_code: string
+    })
+};
+
+export default BradSearchAutocomplete;
+
+// 2. In venia-ui/lib/components/SearchBar/searchBar.js  - here check if bradsearch is enabled and display the component. Also, override form submit
+
+import { Form } from 'informed';
+import { bool, shape, string } from 'prop-types';
+import React from 'react';
+import { useIntl } from 'react-intl';
+import { useSearchBar } from '@magento/peregrine/lib/talons/SearchBar';
+import { useAppContext } from '@magento/peregrine/lib/context/app';
+import { useStyle } from '../../classify';
+import Autocomplete from './autocomplete';
+import BradSearchAutocomplete from './bradSearchAutocomplete';
+import SearchField from './searchField';
+import defaultClasses from './searchBar.module.css';
+
+const SearchBar = React.forwardRef((props, ref) => {
+    const { isOpen } = props;
+    const talonProps = useSearchBar();
+    const {
+        containerRef,
+        setSearchTerm,
+        handleChange,
+        handleFocus,
+        handleSubmit,
+        initialValues,
+        isAutoCompleteOpen,
+        setIsAutoCompleteOpen,
+        valid,
+        setSearchTermLoading,
+        searchTermLoading
+    } = talonProps;
+
+    // Get storeConfig for BradSearch configuration
+    const [{ storeConfig }] = useAppContext();
+
+    const bradSearchEnabled = storeConfig?.bradsearch_autocomplete_enabled === '1' || storeConfig?.bradsearch_autocomplete_enabled === true;
+
+    // No-op submit handler for BradSearch - form submission is handled by Brad's web component
+    const bradSearchSubmit = () => {}
+
+    const classes = useStyle(defaultClasses, props.classes);
+    const { formatMessage } = useIntl();
+
+    const placeholder = formatMessage({
+        id: 'search.placeholder',
+        defaultMessage: 'Search among over 70 000 tools'
+    });
+
+    return (
+        <div className={classes.root} data-cy="SearchBar-root" ref={ref}>
+            <div ref={containerRef} className={classes.container}>
+                <Form
+                    autoComplete="off"
+                    className={classes.form}
+                    initialValues={initialValues}
+                    onSubmit={bradSearchEnabled ? bradSearchSubmit : handleSubmit}
+                >
+                    {bradSearchEnabled ? (
+                        <BradSearchAutocomplete storeConfig={storeConfig} />
+                    ) : (
+                        <div className={classes.autocomplete}>
+                            <Autocomplete
+                                setVisible={setIsAutoCompleteOpen}
+                                valid={valid}
+                                visible={isAutoCompleteOpen}
+                                setSearchTerm={setSearchTerm}
+                                setSearchTermLoading={setSearchTermLoading}
+                            />
+                        </div>
+                    )}
+                    <div className={classes.search}>
+                        <SearchField
+                            placeholder={placeholder}
+                            isSearchOpen={isOpen}
+                            onChange={handleChange}
+                            onFocus={handleFocus}
+                            searchTermLoading={bradSearchEnabled ? false : searchTermLoading}
+                        />
+                    </div>
+                </Form>
+            </div>
+        </div>
+    );
+});
+
+export default SearchBar;
+
+SearchBar.propTypes = {
+    classes: shape({
+        autocomplete: string,
+        container: string,
+        form: string,
+        root: string,
+        root_open: string,
+        search: string
+    }),
+    isOpen: bool
+};
+
+
+// 3. packages/peregrine/lib/talons/Header/storeSwitcher.gql.js - add configs
+
+bradsearch_autocomplete_enabled
+bradsearch_autocomplete_public_key
+
+// 4. packages/peregrine/lib/store/reducers/app.js - add default values (for local development can keep it disabled)
+
+bradsearch_autocomplete_enabled: true
+bradsearch_autocomplete_public_key: ''
 
 ```
 
