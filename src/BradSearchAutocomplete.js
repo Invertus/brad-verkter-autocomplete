@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import useScriptLoader from './hooks/useScriptLoader';
 import buildAttributes from './utils/buildAttributes';
-import { buildApiConfig, DEFAULT_SCRIPT_URL } from './config/apiConfig';
+import { buildApiConfig, DEFAULT_SCRIPT_URL, DEFAULT_API_URL } from './config/apiConfig';
 import styles from './config/styles';
 import overrideStyles from './config/overrideStyles';
 import LOCALE_MAP from './config/locales';
@@ -13,7 +13,7 @@ const BradSearchAutocomplete = ({
     showTaxes,
     storeCode,
     categoryFilterCodes,
-    apiUrl,
+    apiUrl = DEFAULT_API_URL,
     scriptUrl = DEFAULT_SCRIPT_URL,
     searchInputSelector = 'input[name="search_query"]',
     redirectUrl = '/search.html?query=bradsearch-placeholder',

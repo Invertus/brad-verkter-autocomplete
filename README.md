@@ -19,7 +19,6 @@ function SearchBar() {
       publicKey="your-api-key"
       showTaxes={true}
       storeCode="lt_store"
-      apiUrl="https://api.bradsearch.com/api/v1/verkter-lt/query"
       categoryFilterCodes={['f71a39ed758a2aba322bd3a9212e01', 'b6f2c76b997fff72c8a41e1531e5ab']}
     />
   );
@@ -33,7 +32,7 @@ function SearchBar() {
 | `publicKey` | `string` | Yes | - | BradSearch API token |
 | `showTaxes` | `boolean` | Yes | - | Whether to display prices with taxes |
 | `storeCode` | `string` | Yes | - | Store code for locale resolution (e.g. `lt_store`) |
-| `apiUrl` | `string` | Yes | - | BradSearch API endpoint URL |
+| `apiUrl` | `string` | No | `https://api.bradsearch.com/api/v1/verkter-lt/query` | BradSearch API endpoint URL |
 | `categoryFilterCodes` | `string[]` | Yes | - | Filter codes used for category click navigation |
 | `scriptUrl` | `string` | No | CDN latest | BradSearch autocomplete script URL |
 | `searchInputSelector` | `string` | No | `input[name="search_query"]` | CSS selector for the search input |
@@ -43,38 +42,7 @@ function SearchBar() {
 ## Magento PWA Studio Integration
 
 ```jsx
-import { BradSearchAutocomplete } from '@bradsearch/brad-verkter-autocomplete';
-import { useQuery } from '@apollo/client';
-import { gql } from 'graphql-tag';
 
-const STORE_CONFIG_QUERY = gql`
-  query StoreConfig {
-    storeConfig {
-      bradsearch_autocomplete_public_key
-      store_code
-      bradsearch_autocomplete_script_url
-    }
-    pricesWithTax @client
-  }
-`;
-
-function SearchBar() {
-  const { data } = useQuery(STORE_CONFIG_QUERY);
-  const storeConfig = data?.storeConfig;
-
-  if (!storeConfig) return null;
-
-  return (
-    <BradSearchAutocomplete
-      publicKey={storeConfig.bradsearch_autocomplete_public_key}
-      showTaxes={data.pricesWithTax}
-      storeCode={storeConfig.store_code}
-      apiUrl="https://api.bradsearch.com/api/v1/verkter-lt/query"
-      categoryFilterCodes={['f71a39ed758a2aba322bd3a9212e01', 'b6f2c76b997fff72c8a41e1531e5ab']}
-      scriptUrl={storeConfig.bradsearch_autocomplete_script_url}
-    />
-  );
-}
 ```
 
 ## Adding New Locales
@@ -101,3 +69,4 @@ The package exports `styles` and `overrideStyles` for reference. To customize, p
 - `overrideStyles` - Default CSS overrides
 - `buildApiConfig` - API config builder function
 - `DEFAULT_SCRIPT_URL` - Default script CDN URL
+- `DEFAULT_API_URL` - Default API endpoint URL
