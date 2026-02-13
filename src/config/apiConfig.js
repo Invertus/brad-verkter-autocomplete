@@ -19,7 +19,7 @@ export function buildApiConfig({ publicKey, apiUrl = DEFAULT_API_URL }) {
                 facetsVisibility:"desktop"
             },
             categoryDefault: {
-                type: "text_keyword",
+                type: "hierarchy",
                 filterable: true,
                 label: "Kategorijos",
                 count: 4,
