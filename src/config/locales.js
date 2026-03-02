@@ -14,10 +14,10 @@ const LOCALE_MAP = {
             suggestionUseBroaderTerms: 'Naudokite mažiau arba bendresnius terminus',
             priceNoTax: 'Be PVM',
             priceWithTax: 'Su PVM',
-            didYouMeanPrefix:'Atsiprašome, nėra rezultatų šiai paieškai',
-            didYouMeanShowing:'Rodoma',
-            didYouMeanResultsFor:'rezultatai',
-            didYouMean:'Pabandykite šias paieškas'
+            didYouMeanPrefix: 'Atsiprašome, nėra rezultatų šiai paieškai',
+            didYouMeanShowing: 'Rodoma',
+            didYouMeanResultsFor: 'rezultatai',
+            didYouMean: 'Pabandykite šias paieškas'
         },
     },
 };
