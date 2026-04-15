@@ -21,7 +21,7 @@ export function buildApiConfig({ publicKey, apiUrl = DEFAULT_API_URL }) {
             categoryDefault: {
                 type: "hierarchy",
                 filterable: true,
-                label: "Kategorijos",
+                label: "Categories",
                 count: 4,
                 facetsVisibility:"desktop"
             }
