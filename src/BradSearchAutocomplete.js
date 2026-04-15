@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import useScriptLoader from './hooks/useScriptLoader';
 import buildAttributes from './utils/buildAttributes';
+import deepMerge from './utils/deepMerge';
 import { buildApiConfig, DEFAULT_SCRIPT_URL, DEFAULT_API_URL } from './config/apiConfig';
-import styles from './config/styles';
-import overrideStyles from './config/overrideStyles';
+import defaultStyles from './config/styles';
+import defaultOverrideStyles from './config/overrideStyles';
 import LOCALE_MAP from './config/locales';
 
 const isServer = !globalThis.document;
@@ -18,39 +19,69 @@ const BradSearchAutocomplete = ({
     searchInputSelector = 'input[name="search_query"]',
     redirectUrl = '/search.html?query=bradsearch-placeholder',
     onSearchResultClick,
+    adminConfig = null,
 }) => {
     const containerRef = useRef(null);
     const componentInitializedRef = useRef(false);
 
     const localeConfig = LOCALE_MAP[storeCode] || LOCALE_MAP.lt_store;
 
-    const options = useMemo(() => ({
-        width: '1000px',
-        customItemClick: true,
-        cardView: 'list',
-        threshold: 3,
-        showHeader: true,
-        columns: {
-            tablet: 2,
-            desktop: 3,
-        },
-        highlights: true,
-        condensed: false,
-        modalSelector: searchInputSelector,
-        locale: localeConfig.locale,
-        priceWithTaxes: showTaxes,
-        currency: 'EUR',
-    }), [showTaxes, searchInputSelector, localeConfig.locale]);
+    // Resolve effective values: adminConfig overrides props/defaults
+    const effectiveScriptUrl = adminConfig?.scriptUrl || scriptUrl;
+    const effectiveApiUrl = adminConfig?.apiConfig?.url || apiUrl;
+    const effectiveSearchInputSelector = adminConfig?.searchInputSelector || searchInputSelector;
+    const effectiveRedirectUrl = adminConfig?.redirectUrl || redirectUrl;
+    const effectiveCategoryFilterCodes = adminConfig?.categoryFilterCodes || categoryFilterCodes;
+
+    const options = useMemo(() => {
+        const defaults = {
+            width: '1000px',
+            customItemClick: true,
+            cardView: 'list',
+            threshold: 3,
+            showHeader: true,
+            columns: {
+                tablet: 2,
+                desktop: 3,
+            },
+            highlights: true,
+            condensed: false,
+            modalSelector: effectiveSearchInputSelector,
+            locale: localeConfig.locale,
+            priceWithTaxes: showTaxes,
+            currency: 'EUR',
+        };
+        return deepMerge(defaults, adminConfig?.options || {});
+    }, [showTaxes, effectiveSearchInputSelector, localeConfig.locale, adminConfig?.options]);
+
+    const apiConfigMerged = useMemo(() => {
+        const defaults = buildApiConfig({ publicKey, apiUrl: effectiveApiUrl });
+        return deepMerge(defaults, adminConfig?.apiConfig || {});
+    }, [publicKey, effectiveApiUrl, adminConfig?.apiConfig]);
+
+    const translations = useMemo(
+        () => deepMerge(localeConfig.translations, adminConfig?.translations || {}),
+        [localeConfig.translations, adminConfig?.translations]
+    );
+
+    const styles = useMemo(
+        () => deepMerge(defaultStyles, adminConfig?.styles || {}),
+        [adminConfig?.styles]
+    );
+
+    const overrideStyles = adminConfig?.overrideStyles !== undefined
+        ? adminConfig.overrideStyles
+        : defaultOverrideStyles;
 
     const config = useMemo(() => ({
-        'api-config': buildApiConfig({ publicKey, apiUrl }),
-        'redirect-url': redirectUrl,
-        'search-input-selector': searchInputSelector,
+        'api-config': apiConfigMerged,
+        'redirect-url': effectiveRedirectUrl,
+        'search-input-selector': effectiveSearchInputSelector,
         options,
-        translations: localeConfig.translations,
+        translations,
         styles,
         'override-styles': overrideStyles,
-    }), [publicKey, apiUrl, redirectUrl, searchInputSelector, options, localeConfig.translations]);
+    }), [apiConfigMerged, effectiveRedirectUrl, effectiveSearchInputSelector, options, translations, styles, overrideStyles]);
 
     const initializeComponent = useCallback(() => {
         if (!containerRef.current || componentInitializedRef.current) return;
@@ -61,7 +92,7 @@ const BradSearchAutocomplete = ({
     }, [config]);
 
     useScriptLoader(
-        !isServer && publicKey ? scriptUrl : null,
+        !isServer && publicKey ? effectiveScriptUrl : null,
         initializeComponent
     );
 
@@ -104,7 +135,7 @@ const BradSearchAutocomplete = ({
                 const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
                 window.location.href = origin + '/search.html?query=' + encodedQuery + '&manufacturer%5Bfilter%5D=' + encodedValue;
             } else if (section === 'category') {
-                const foundCode = categoryFilterCodes.find(function(code) {
+                const foundCode = effectiveCategoryFilterCodes.find(function(code) {
                     return filters[code] && filters[code].some(function(filterItem) {
                         return filterItem.value === item.value;
                     });
@@ -119,7 +150,7 @@ const BradSearchAutocomplete = ({
 
         document.addEventListener('bradsearch-search-result-click', handleClick);
         return () => document.removeEventListener('bradsearch-search-result-click', handleClick);
-    }, [onSearchResultClick, categoryFilterCodes]);
+    }, [onSearchResultClick, effectiveCategoryFilterCodes]);
 
     if (isServer) return null;
 
