@@ -1,4 +1,4 @@
-const DEFAULT_SCRIPT_URL = 'https://cdn.js.bradsearch.com/bradsearch-scripts/v6.0.6/bradautocomplete.umd.js';
+const DEFAULT_SCRIPT_URL = 'https://cdn.js.bradsearch.com/bradsearch-scripts/v6.3.1/bradautocomplete.umd.js';
 const DEFAULT_API_URL = 'https://api.bradsearch.com/api/v1/verkter-lt/query';
 
 export function buildApiConfig({ publicKey, apiUrl = DEFAULT_API_URL }) {
