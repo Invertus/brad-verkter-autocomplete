@@ -129,11 +129,12 @@ const BradSearchAutocomplete = ({
 
             const encodedQuery = encodeURIComponent(query);
 
-            var origin = (globalThis.location && globalThis.location.origin) || '';
+            const searchPage = new URL(effectiveRedirectUrl, globalThis.location.href);
+            const searchPageUrl = searchPage.origin + searchPage.pathname;
 
             if (section === 'facet') {
                 const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                window.location.href = origin + '/search.html?query=' + encodedQuery + '&manufacturer%5Bfilter%5D=' + encodedValue;
+                window.location.href = searchPageUrl + '?query=' + encodedQuery + '&manufacturer%5Bfilter%5D=' + encodedValue;
             } else if (section === 'category') {
                 const foundCode = effectiveCategoryFilterCodes.find(function(code) {
                     return filters[code] && filters[code].some(function(filterItem) {
@@ -143,14 +144,14 @@ const BradSearchAutocomplete = ({
 
                 if (foundCode) {
                     const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                    window.location.href = origin + '/search.html?query=' + encodedQuery + '&' + foundCode + '%5Bfilter%5D=' + encodedValue;
+                    window.location.href = searchPageUrl + '?query=' + encodedQuery + '&' + foundCode + '%5Bfilter%5D=' + encodedValue;
                 }
             }
         };
 
         document.addEventListener('bradsearch-search-result-click', handleClick);
         return () => document.removeEventListener('bradsearch-search-result-click', handleClick);
-    }, [onSearchResultClick, effectiveCategoryFilterCodes]);
+    }, [onSearchResultClick, effectiveCategoryFilterCodes, effectiveRedirectUrl]);
 
     if (isServer) return null;
 
