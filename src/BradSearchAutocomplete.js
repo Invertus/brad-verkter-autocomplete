@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import useScriptLoader from './hooks/useScriptLoader';
 import buildAttributes from './utils/buildAttributes';
 import deepMerge from './utils/deepMerge';
+import buildSearchResultUrl from './utils/buildSearchResultUrl';
 import { buildApiConfig, DEFAULT_SCRIPT_URL, DEFAULT_API_URL } from './config/apiConfig';
 import defaultStyles from './config/styles';
 import defaultOverrideStyles from './config/overrideStyles';
@@ -39,6 +40,7 @@ const BradSearchAutocomplete = ({
             customItemClick: true,
             cardView: 'list',
             threshold: 3,
+            debounce: 300,
             showHeader: true,
             columns: {
                 tablet: 2,
@@ -127,13 +129,10 @@ const BradSearchAutocomplete = ({
 
             if (!('value' in item)) return;
 
-            const encodedQuery = encodeURIComponent(query);
-
-            var origin = (globalThis.location && globalThis.location.origin) || '';
+            const currentHref = globalThis.location.href;
 
             if (section === 'facet') {
-                const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                window.location.href = origin + '/search.html?query=' + encodedQuery + '&manufacturer%5Bfilter%5D=' + encodedValue;
+                window.location.href = buildSearchResultUrl(effectiveRedirectUrl, currentHref, query, 'manufacturer', item.value);
             } else if (section === 'category') {
                 const foundCode = effectiveCategoryFilterCodes.find(function(code) {
                     return filters[code] && filters[code].some(function(filterItem) {
@@ -142,15 +141,14 @@ const BradSearchAutocomplete = ({
                 });
 
                 if (foundCode) {
-                    const encodedValue = encodeURIComponent(`${item.value}|${item.value}`);
-                    window.location.href = origin + '/search.html?query=' + encodedQuery + '&' + foundCode + '%5Bfilter%5D=' + encodedValue;
+                    window.location.href = buildSearchResultUrl(effectiveRedirectUrl, currentHref, query, foundCode, item.value);
                 }
             }
         };
 
         document.addEventListener('bradsearch-search-result-click', handleClick);
         return () => document.removeEventListener('bradsearch-search-result-click', handleClick);
-    }, [onSearchResultClick, effectiveCategoryFilterCodes]);
+    }, [onSearchResultClick, effectiveCategoryFilterCodes, effectiveRedirectUrl]);
 
     if (isServer) return null;
 
